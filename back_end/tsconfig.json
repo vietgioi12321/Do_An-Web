@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",                          
+    "module": "commonjs",
+    "rootDir": "./",                                               
+    "outDir": "./dist",                          
+    "esModuleInterop": true,                     /* Hỗ trợ import mượt mà các thư viện như express, dotenv */
+    "forceConsistentCasingInFileNames": true,    /* Đảm bảo viết hoa/thường tên file đồng nhất */
+    "strict": true,                              /* Bật kiểm tra kiểu dữ liệu nghiêm ngặt để giảm thiểu bug */
+    "skipLibCheck": true                         /* Bỏ qua kiểm tra lỗi type bên trong node_modules (Tránh lỗi Express lúc nãy) */
+  },
+  "include": [
+    "src/**/*",
+    "./*.ts"
+  ]                        
+}

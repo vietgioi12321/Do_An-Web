@@ -1,0 +1,8 @@
+tr,th {
+    border: 1px solid black; /* Kẻ đường viền ngang thanh mảnh */
+  }
+
+td{
+  border: 1px solid black;
+  text-align: center;
+}

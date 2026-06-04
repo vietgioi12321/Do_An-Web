@@ -1,0 +1,38 @@
+import express from 'express';
+import dotenv from 'dotenv';
+import connectDB from '../config/db';
+
+import './models/Counter';
+
+import activitylogRouter from './routes/activityLogRouter';
+import chatbotlogRouter from './routes/chatBotLogRouter';
+import deviceRouter from './routes/deviceRouter';
+import logentryRouter from './routes/logEntryRouter';
+import sussgesionRouter from './routes/sussgesionRouter';
+import userRoutes from './routes/userRoute';
+
+
+dotenv.config();
+
+const app = express(); 
+const PORT = process.env.PORT || 5000;
+
+connectDB();
+
+app.use(express.json());
+app.use('/api/activitylog',activitylogRouter)
+app.use('/api/chatbotlog',chatbotlogRouter)
+app.use('/api/device',deviceRouter)
+app.use('/api/logentry',logentryRouter)
+app.use('/api/sussgesion',sussgesionRouter)
+app.use('/api/users', userRoutes);
+
+// ✅ ĐÃ SỬA: Thay đổi Request/Response thành express.Request/express.Response để tránh lỗi dòng này
+app.get('/', (req: express.Request, res: express.Response) => {
+    console.log("🔔 [GET] Có yêu cầu truy cập vào trang chủ API!")
+    res.send('API Giám sát hệ thống đang chạy...');
+});
+
+app.listen(PORT, () => {
+  console.log(`⚡ Server đang chạy tại cổng: ${PORT}`);
+});

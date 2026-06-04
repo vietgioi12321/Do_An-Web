@@ -1,0 +1,144 @@
+/* Tổng quan khung Chat */
+.web-chat-container {
+  display: flex;
+  flex-direction: column;
+  width: 400px; /* Định kích thước chiều rộng giả lập thiết bị giống ảnh của bạn */
+  height: 750px;
+  background-color: #f4f6f8;
+  border: 1px solid #e1e4e8;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  margin: 20px auto;
+}
+
+/* Header */
+.web-chat-header {
+  background-color: #ffffff;
+  padding: 15px;
+  border-bottom: 1px solid #e1e4e8;
+  color: #7f7f7f;
+}
+.header-info h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+.header-info span {
+  font-size: 12px;
+  color: #a0a0a0;
+}
+
+/* Thân hiển thị tin nhắn */
+.web-chat-body {
+  flex: 1;
+  padding: 15px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Căn hàng dòng tin nhắn (Khắc phục lỗi tràn hàng ngang) */
+.message-row {
+  display: flex;
+  width: 100%;
+}
+.user-row {
+  justify-content: flex-end; /* Người dùng đẩy sang bên phải */
+}
+.ai-row {
+  justify-content: flex-start; /* AI trợ lý đẩy sang bên trái */
+}
+
+/* Bong bóng chat tinh chỉnh giới hạn kích thước */
+.message-bubble {
+  max-width: 80%; /* Giới hạn tối đa 80% chiều rộng, không bị tràn 100% */
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  line-height: 1.45;
+  position: relative;
+  word-wrap: break-word;
+  white-space: pre-line; /* Giữ nguyên các dấu xuống dòng của code */
+}
+
+/* Style riêng cho User và AI */
+.user-bubble {
+  background-color: #ffffff;
+  color: #000000;
+  border: 1px solid #e1e4e8;
+  border-bottom-right-radius: 2px;
+}
+.ai-bubble {
+  background-color: #ffffff;
+  color: #333333;
+  border: 1px solid #e1e4e8;
+  border-bottom-left-radius: 2px;
+}
+
+/* Các chi tiết nhỏ trong bong bóng chat */
+.bubble-sender-name {
+  font-size: 11px;
+  font-weight: bold;
+  color: #007aff;
+  margin-bottom: 4px;
+}
+.ai-bubble .bubble-sender-name {
+  color: #555555;
+}
+.bubble-error-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #d9383a;
+  margin-bottom: 6px;
+  background-color: #fff5f5;
+  padding: 4px 6px;
+  border-radius: 4px;
+}
+.bubble-time {
+  font-size: 10px;
+  color: #999999;
+  text-align: right;
+  margin-top: 5px;
+}
+
+/* Thanh nhập liệu sát đáy */
+.web-chat-footer {
+  display: flex;
+  padding: 10px;
+  background-color: #ffffff;
+  border-top: 1px solid #e1e4e8;
+  align-items: center;
+}
+.web-chat-footer input {
+  flex: 1;
+  height: 38px;
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  padding: 0 12px;
+  font-size: 14px;
+  outline: none;
+  background-color: #fff9f9; /* Màu hơi hồng nhạt tương đồng ảnh mẫu của bạn */
+}
+.web-chat-footer input:focus {
+  border-color: #007aff;
+}
+.web-send-btn {
+  background-color: #2b93d1; /* Màu xanh nước biển của nút gửi trong ảnh */
+  border: none;
+  color: white;
+  width: 38px;
+  height: 38px;
+  border-radius: 4px;
+  margin-left: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.web-send-btn:hover {
+  background-color: #1f72a4;
+}
