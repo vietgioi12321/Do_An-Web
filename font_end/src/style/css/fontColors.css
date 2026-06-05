@@ -1,0 +1,20 @@
+:root {
+    /* ✍️ Các mức độ màu chữ mặc định của hệ thống */
+    --text-main: #ffffff;       /* Màu chữ chính: Màu trắng (Dành cho nền tối) */
+    --text-sub: #8a99ad;        /* Màu chữ phụ: Màu xám sáng (Dành cho mô tả, sub-title, ngày tháng) */
+    --text-muted: #4e6178;      /* Màu chữ mờ: Màu xám tối (Dành cho placeholder hoặc chữ bị vô hiệu hóa) */
+    
+    /* 🎨 Màu chữ làm điểm nhấn (Nhãn, Link, các Tab đang được chọn) */
+    --text-link: #3c8dc2;       /* Màu chữ xanh dương (Màu tab active của bạn) */
+    --text-accent: #00f0ff;     /* Màu chữ xanh cyan chớp điện (Nếu cần làm nổi bật cái gì đó ngầu) */
+  
+    /* 🚨 Màu chữ hiển thị trạng thái (Rất quan trọng cho việc hiển thị Bug/Log) */
+    --text-success: #10b981;    /* Màu chữ xanh lá: Khi bug đã RESOLVED (Đã sửa) */
+    --text-warning: #f59e0b;    /* Màu chữ vàng: Khi bug đang PENDING (Đang xử lý) */
+    --text-danger: #ef4444;     /* Màu chữ đỏ: Khi bug là CRITICAL hoặc REJECTED (Lỗi nghiêm trọng) */
+  }
+  
+  /* Áp dụng màu chữ trắng mặc định lên toàn bộ trang web */
+  body {
+    color: var(--text-main);
+  }

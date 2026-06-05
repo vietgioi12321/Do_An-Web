@@ -4,6 +4,7 @@ import Overview from './OverviewTab';
 import Menu from './MenuView';
 import Assign from './AssignTab'
 import Activity from './ActivityTab';
+import background from '../assets/icons/background.png';
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('assign');
@@ -26,18 +27,22 @@ function Dashboard() {
   };
 
   return (
-    <div class="dashboard" style={{display:'flex', flexDirection: 'row',width:'100vw',height:'100vh',overflowWrap:'break-word'}}>
+    <div className="dashboard" style={{display:'flex', flexDirection: 'row',width:'100vw',height:'100vh',overflowWrap:'break-word'}}>
         
-        <div class="dashboard__menu" style={{backgroundColor: '#00253A', width: '15%'}}>
+        <div className="dashboard__menu" style={{backgroundColor: '#00253A', width: '15%'}}>
           <Menu></Menu>
         </div>
-        <div class="dashboardView" style={{width: '85%'}}>
-          <div class="dashboardView__search" style={{backgroundColor:'#D9D9D9',display:'flex', alignItems:'center', marginRight:30}}>
-            <i class="fa-solid fa-magnifying-glass"></i>
+        <div className="dashboardView" style={{width: '85%', 
+                                          backgroundImage: `url('${background}')`,
+                                          backgroundSize: 'cover',
+                                          backgroundRepeat: 'no-repeat',
+                                          backgroundAttachment: 'fixed',}}>
+          <div className="dashboardView__search" style={{display:'flex', alignItems:'center', marginRight:30}}>
+            <i className="fa-solid fa-magnifying-glass"></i>
             <input type='search' placeholder="Search" style={{height:30,flex:1, marginRight:20}} />
-            <img src="/assets/icons/User.png" alt="User" style={{ width: 30, height: 30 }}></img>
+            <img src="/assets/icons/icon_Dev.png" alt="User" style={{ width: 100, height: 100 }}></img>
           </div> 
-          <nav class="page">
+          <nav className="page">
             <ol style={{display:'flex', listStyle:'none',marginBottom:'6px',paddingLeft:'20px'}}>
               <li style={{}}><a href='trangchu'>Home</a></li>
               <span style={{margin:'0 6px'}}> &gt; </span>
@@ -45,14 +50,15 @@ function Dashboard() {
             </ol>
           </nav>
 
-          <div class="dashboardName" style={{marginLeft:'30px', gap: '6px',display:'flex',alignItems:'flex-end'}}>
-            <i class="fa-regular fa-clock"></i>
+          <div className="dashboardName" style={{marginLeft:'30px', gap: '6px',display:'flex',alignItems:'flex-end'}}>
+            <i className="fa-regular fa-clock"></i>
             <span>Dashboard</span>
           </div>
 
-          <div class="page-function" style={{ display: 'flex', gap: '30px' }}>
+          <div className="page-function" style={{ display: 'flex', gap: '30px' }}>
             {tabs.map(tab => (
-              <button
+              <button 
+                key={tab}
                 onClick={() => setActiveTab(tab)}
                 style={{
                   color: activeTab === tab ? '#3C8DC2' : 'black',
@@ -66,7 +72,7 @@ function Dashboard() {
           </div>
           <hr/>
 
-          <div class="tab-content">
+          <div className="tab-content">
             {renderContent()}
           </div>
         </div>

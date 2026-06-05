@@ -3,18 +3,20 @@ import './style/AssignStyle.css'
 
 function Assign(){
     return(
-        <div class="Assign" style={{display:'flex', flexDirection:'column'}}>
+        <div className="Assign" style={{display:'flex', flexDirection:'column'}}>
             <h3 style={{marginLeft:10, marginBlock:'10px'}}>Assign</h3>
             <h4 style={{marginLeft:20, marginBlock:'10px'}}>Danh sách gán lỗi - Developer</h4>
 
-            <table class="listError" style={{borderCollapse:'collapse',marginInline:20}}>
+            <table className="listError" style={{borderCollapse:'collapse',marginInline:20}}>
                 <thead>
-                    <th style={{border:'1px solid black'}}>ID</th>
-                    <th>Tiêu Đề</th>
-                    <th>Phiên Bản</th>
-                    <th>Developer được gán Assign</th>
-                    <th>Trạng Thái</th>
-                    <th>Hành Động</th>
+                    <tr>
+                        <th style={{border:'1px solid black'}}>ID</th>
+                        <th>Tiêu Đề</th>
+                        <th>Phiên Bản</th>
+                        <th>Developer được gán Assign</th>
+                        <th>Trạng Thái</th>
+                        <th>Hành Động</th>
+                    </tr>
                 </thead>
                 <tbody>
                     <tr style={{border:'1px solid black'}}>
