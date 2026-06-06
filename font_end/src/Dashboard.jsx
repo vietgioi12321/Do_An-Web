@@ -2,13 +2,15 @@ import React from 'react';
 import { useState } from 'react';
 import Overview from './OverviewTab';
 import Menu from './MenuView';
+import Device from './DeviceTab';
+import Error from './ErrorTab';
 import Assign from './AssignTab'
 import Activity from './ActivityTab';
-import background from '../assets/icons/background.png';
+
 
 function Dashboard() {
   const [activeTab, setActiveTab] = useState('assign');
-  const tabs = ['overview', 'devices', 'patching', 'software', 'Error', 'activities','assign'];
+  const tabs = ['overview', 'devices', 'patching', 'software', 'error', 'activities','assign'];
 
   // Hàm render nội dung tương ứng
   const renderContent = () => {
@@ -17,6 +19,10 @@ function Dashboard() {
         return <Overview/>;
       case 'danh sách lỗi':
         return <BugListComponent />;
+      case 'devices':
+        return <Device/>
+      case 'error':
+        return <Error/>
       case 'assign':
         return <Assign />; 
       case 'activities':
@@ -32,11 +38,7 @@ function Dashboard() {
         <div className="dashboard__menu" style={{backgroundColor: '#00253A', width: '15%'}}>
           <Menu></Menu>
         </div>
-        <div className="dashboardView" style={{width: '85%', 
-                                          backgroundImage: `url('${background}')`,
-                                          backgroundSize: 'cover',
-                                          backgroundRepeat: 'no-repeat',
-                                          backgroundAttachment: 'fixed',}}>
+        <div className="dashboardView" style={{width: '85%'}}>
           <div className="dashboardView__search" style={{display:'flex', alignItems:'center', marginRight:30}}>
             <i className="fa-solid fa-magnifying-glass"></i>
             <input type='search' placeholder="Search" style={{height:30,flex:1, marginRight:20}} />

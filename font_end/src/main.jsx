@@ -7,7 +7,7 @@ import ChangePassword from './ChangePassword'
 import AIChatbotDashboard from './AIChatbotDashboard'
 import { AdminRoute } from './AdminRoute'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import './style/css/fontColors.css'
+// import './style/css/fontColors.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>

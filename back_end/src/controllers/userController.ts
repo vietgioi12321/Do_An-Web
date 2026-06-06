@@ -1,5 +1,11 @@
 import { Request, Response } from 'express';
 import UserModel from '../models/User'; // Import Model User của bạn
+import ActivityLog from '../models/ActivityLog';
+import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken';
+
+
+dotenv.config();
 
 export const loginController = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -25,9 +31,23 @@ export const loginController = async (req: Request, res: Response): Promise<void
        return;
     }
 
-    // 4. Đăng nhập thành công -> Trả về thông tin cần thiết (Không trả về mật khẩu)
+    // 🌟 4. KHỞI TẠO VÀ LƯU ACTIVITY LOG VÀO DATABASE
+    const token = jwt.sign(
+      { userId: user.userId, role: user.rules }, 
+      process.env.JWT_SECRET || 'MOCK_SECRET_KEY'
+    );
+
+    await ActivityLog.create({
+      userId: user.userId,
+      actionName: 'LOGIN',
+      details: `Người dùng ${user.nameUser} đã đăng nhập thành công vào hệ thống.`,
+      timestamp: new Date()
+    });
+
+    // 5. Đăng nhập thành công -> Trả về thông tin cần thiết (Không trả về mật khẩu)
     res.status(200).json({
       message: 'Đăng nhập hệ thống thành công!',
+      token: token,
       user: {
         userId: user.userId,
         userName: user.nameUser,
