@@ -10,6 +10,7 @@ import assignRouter from './routes/assignRouter';
 import chatbotlogRouter from './routes/chatBotLogRouter';
 import deviceRouter from './routes/deviceRouter';
 import logentryRouter from './routes/logEntryRouter';
+import reportRouter from './routes/reportRouter';
 import sussgesionRouter from './routes/sussgesionRouter';
 import userRoutes from './routes/userRoute';
 
@@ -34,6 +35,7 @@ app.use('/api/assign',assignRouter)
 app.use('/api/chatbotlog',chatbotlogRouter)
 app.use('/api/device',deviceRouter)
 app.use('/api/logentry',logentryRouter)
+app.use('/api/report',reportRouter)
 app.use('/api/sussgesion',sussgesionRouter)
 app.use('/api/users', userRoutes);
 

@@ -1,82 +1,38 @@
 import React from 'react';
-import { useState } from 'react';
-import Overview from './OverviewTab';
-import Menu from './MenuView';
-import Device from './DeviceTab';
-import Error from './ErrorTab';
-import Assign from './AssignTab'
-import Activity from './ActivityTab';
+import { useState,useEffect } from 'react';
 
+import Menu from './MenuView';
+import Header from './layout/Header';
+
+import AdminScreen from './User/Admin';
+import DeveloperScreen from './User/Developer';
+
+import ChatBotScreen from './ChatbotScreen';
 
 function Dashboard() {
-  const [activeTab, setActiveTab] = useState('assign');
-  const tabs = ['overview', 'devices', 'patching', 'software', 'error', 'activities','assign'];
+    const [activeTab, setActiveTab] = useState('assign');
+    const [activeChatBot, setActiveChatBot] = useState(0)
+    const [userRole, setUserRole] = useState('null');
 
-  // Hàm render nội dung tương ứng
-  const renderContent = () => {
-    switch (activeTab) {
-      case 'overview':
-        return <Overview/>;
-      case 'danh sách lỗi':
-        return <BugListComponent />;
-      case 'devices':
-        return <Device/>
-      case 'error':
-        return <Error/>
-      case 'assign':
-        return <Assign />; 
-      case 'activities':
-        return <Activity/>
-      default:
-        return null;
-    }
-  };
+    useEffect(()=>{
+        const saveUserRole = localStorage.getItem('userRole')
+        setUserRole(saveUserRole)
+        console.log('userRole: '+typeof(userRole))
+    },[])
 
   return (
     <div className="dashboard" style={{display:'flex', flexDirection: 'row',width:'100vw',height:'100vh',overflowWrap:'break-word'}}>
-        
         <div className="dashboard__menu" style={{backgroundColor: '#00253A', width: '15%'}}>
           <Menu></Menu>
         </div>
-        <div className="dashboardView" style={{width: '85%'}}>
-          <div className="dashboardView__search" style={{display:'flex', alignItems:'center', marginRight:30}}>
-            <i className="fa-solid fa-magnifying-glass"></i>
-            <input type='search' placeholder="Search" style={{height:30,flex:1, marginRight:20}} />
-            <img src="/assets/icons/icon_Dev.png" alt="User" style={{ width: 100, height: 100 }}></img>
-          </div> 
-          <nav className="page">
-            <ol style={{display:'flex', listStyle:'none',marginBottom:'6px',paddingLeft:'20px'}}>
-              <li style={{}}><a href='trangchu'>Home</a></li>
-              <span style={{margin:'0 6px'}}> &gt; </span>
-              <li><a href='oke' style={{textDecoration:'none', color:'inherit'}}>Activity</a></li>
-            </ol>
-          </nav>
-
-          <div className="dashboardName" style={{marginLeft:'30px', gap: '6px',display:'flex',alignItems:'flex-end'}}>
-            <i className="fa-regular fa-clock"></i>
-            <span>Dashboard</span>
+        <div className="dashboardView" style={{width: '80%'}}>
+          <Header/>
+          <div className='body'>
+            {userRole == '1' ? <AdminScreen/> : <DeveloperScreen/>}
           </div>
-
-          <div className="page-function" style={{ display: 'flex', gap: '30px' }}>
-            {tabs.map(tab => (
-              <button 
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                style={{
-                  color: activeTab === tab ? '#3C8DC2' : 'black',
-                  background: 'none',
-                  border: 'none'
-                }}
-              >
-                {tab.charAt(0).toUpperCase() + tab.slice(1)}
-              </button>
-            ))}
-          </div>
-          <hr/>
-
-          <div className="tab-content">
-            {renderContent()}
-          </div>
+        </div>
+        <div className='ChatBot'>
+          <ChatBotScreen/>
         </div>
     </div>
   );

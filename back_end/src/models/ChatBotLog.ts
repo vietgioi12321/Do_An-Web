@@ -6,7 +6,8 @@ interface ChatBotLog extends Document {
     chatBotName: string;
     version: string,
     userId: number,
-    message: string,
+    messageUser: string,
+    messageChat: string,
     timestamp: Date,
 }
 
@@ -15,7 +16,8 @@ const ChatBotLogSchema : Schema = new Schema({
     chatBotName: {type:String,required:true},
     version: {type:String,required:true},
     userId: {type:Number,required:true},
-    message: {type:String,required:true},
+    messageUser: {type:String,required:true},
+    messageChat: {type:String,required:true},
     timestamp: {type:Date,required:true}
 })
 

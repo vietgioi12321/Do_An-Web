@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import axios from 'axios';
-import {Link} from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
-import md5 from 'md5';
+import { loginService } from './services/authService';
+import Icons from '../assets/icons/icons';
+import AuthFormStyle from './style/css/AuthForm';
 
 function Login(){
     const [username, setUsername] = useState('');
@@ -10,72 +10,63 @@ function Login(){
     const [error, setError] = useState('');
     const navigate = useNavigate();
     
+    /** @param {React.FormEvent} e */
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-        // 1. Gửi tài khoản mật khẩu lên server backend của bạn
-        const response = await axios.post('http://localhost:5000/api/users/login', {
-            username,
-            password: md5(password)
-        });
-    
-        const { token, user } = response.data;
-        console.log("token:", token);
-        console.log("user:", user);
-    
-        // 2. CẤP NHẬT SESSION: Lưu token vào localStorage để giữ trạng thái đăng nhập
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('userRole', user.role); // Lưu role để tiện check nhanh
-    
-        // 3. XÁC NHẬN QUYỀN ĐỂ ĐIỀU HƯỚNG VÀO TRANG HỢP LÝ
-        if (Number(user.role) === 1) {
-            // Nếu là sếp Admin -> Đẩy vào trang Dashboard quản lý Bug tổng thể
-            navigate('/admin/dashboard'); 
-        } else {
-            // Nếu là User thường -> Đẩy vào trang xem báo cáo cá nhân hoặc trang chủ
-            navigate('/user/home');
-        }
+            const data = await loginService(username, password);
+            localStorage.setItem('token', data.token);
+            localStorage.setItem('userRole', data.user.role);
+            navigate('/dashboard');
 
         } catch (err) {
-            console.log(err)
-        // Bắt lỗi nếu sai tài khoản/mật khẩu
-        setError(err.response?.data?.error || 'Đăng nhập thất bại!');
+            console.log(err);
+            setError(err.response?.data?.error || 'Đăng nhập thất bại!');
         }
     };
 
+
     return(
-        <div className="login" style={{width:'100vw',height:'100vh', 
-                            display:'flex',justifyContent:'center', alignItems:'center',flexDirection:'column',gap:'20px',
-                            background:'#D0EEFF'}}>
-            <img src='../assets/icons/ICTU_logo.png' alt='ICTU_icon' style={{width:'100px',height:'100px'}}/>
-            <form className='form_login' onSubmit={handleLogin} style={{display:'flex', gap:20, flexDirection:'column'}}>
-                <div className='input_RecoverPassword' style={{display:'flex', flexDirection:'column', gap:10, alignItems:'end'}}>
+        <div className="login" style={AuthFormStyle.authForm}>
+            {/* image logo ICTU */}
+            <img src={Icons.ictuLogo} alt='ICTU_icon' style={AuthFormStyle.logo}/>
+            
+            {/* Form login */}
+            <form className='form_login' onSubmit={handleLogin} style={AuthFormStyle.form}>
+                {/*  input account ---------------------------------------------------------------------*/}
+                <div className='input_Login' style={AuthFormStyle.input}>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
+
+
+                    {/* Input UserName*/}
                     <div className="username" >
-                        <strong>Tài khoản</strong>
+                        <strong> Tài khoản </strong>
                         <input  value={username}
-                                onChange={(e) => setUsername(e.target.value)} // Cập nhật state khi gõ
-                                style={{marginLeft:10, height:40, width:250}}/>
+                            onChange={(e) => setUsername(e.target.value)} style={AuthFormStyle.inpuField}/>
                     </div>
+
+
+                    {/* Input password */}
                     <div className="passwork">
-                        <strong>Mật khẩu</strong>
-                        <input  type='password' 
-                                value={password} 
-                                onChange={(e) => setPassword(e.target.value)} 
-                                style={{marginLeft:10, height:40, width:250}}/>
+                        <strong> Mật khẩu </strong>
+                        <input type='password' value={password}
+                            onChange={(e) => setPassword(e.target.value)} style={AuthFormStyle.inpuField}/>
                     </div>
+
+
+
                 </div>
+
+                {/* Button navigate --------------------------------------------------------*/}
                 <div className="button" style={{display: 'flex', justifyContent: 'space-between',}}>
-                    <Link to="/RecoverPassword">
-                        <button background='#D9D9D9' style={{border:'none', padding:10}} >Revcorver Passwork</button>
-                    </Link>
-                    
-                    {/* <Link to='/dashboard'>
-                        <button type='submit' background='#D9D9D9' style={{border:'none', padding:10}}>Login</button>
-                    </Link> */}
-                    <button type="submit" background='#D9D9D9' style={{border:'none', padding:10}}>Login</button>
-                    
+                    <button 
+                        type='button'
+                        onClick={() => navigate('/RecoverPassword')}
+                        style={AuthFormStyle.button} > Revcorver Passwork </button>
+                    <button type="submit" style={AuthFormStyle.button}> Login </button>
                 </div>
+
+                
             </form>
         </div>
     )

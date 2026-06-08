@@ -30,13 +30,7 @@ function ChangePassword(){
         localStorage.setItem('userRole', user.role); // Lưu role để tiện check nhanh
     
         // 3. XÁC NHẬN QUYỀN ĐỂ ĐIỀU HƯỚNG VÀO TRANG HỢP LÝ
-        if (Number(user.role) === 1) {
-            // Nếu là sếp Admin -> Đẩy vào trang Dashboard quản lý Bug tổng thể
-            navigate('/admin/dashboard'); 
-        } else {
-            // Nếu là User thường -> Đẩy vào trang xem báo cáo cá nhân hoặc trang chủ
-            navigate('/user/home');
-        }
+        navigate('/dashboard'); 
 
         } catch (err) {
             console.log(err)

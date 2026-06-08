@@ -2,9 +2,19 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import './style/AssignStyle.css';
 
+interface Device {
+    deviceId: number;
+    name: string;
+    osVersion: string;
+    cpuCores: string;
+    batteryLevel: string;
+    networkSpeeds: number;
+    totalApps: number
+}
+
 function Device() {
     // 1. Khởi tạo state lưu danh sách thiết bị và trạng thái loading
-    const [devices, setDevices] = useState([]);
+    const [devices, setDevices] = useState<Device[]>([]);
     const [loading, setLoading] = useState(true);
 
     // 2. Tự động gọi API lấy danh sách thiết bị khi truy cập màn hình
