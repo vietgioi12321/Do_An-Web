@@ -17,7 +17,6 @@ function Dashboard() {
     useEffect(()=>{
         const saveUserRole = localStorage.getItem('userRole')
         setUserRole(saveUserRole)
-        console.log('userRole: '+typeof(userRole))
     },[])
 
   return (
@@ -25,15 +24,20 @@ function Dashboard() {
         <div className="dashboard__menu" style={{backgroundColor: '#00253A', width: '15%'}}>
           <Menu></Menu>
         </div>
-        <div className="dashboardView" style={{width: '80%'}}>
-          <Header/>
-          <div className='body'>
-            {userRole == '1' ? <AdminScreen/> : <DeveloperScreen/>}
-          </div>
-        </div>
-        <div className='ChatBot'>
-          <ChatBotScreen/>
-        </div>
+        {userRole == '1' ? 
+          (<div className="dashboardView" style={{width: '97%'}}> 
+            <Header/>
+            <div className='body'><AdminScreen/></div>
+          </div>)
+          :
+          (
+          <div style={{ display: 'flex', flexDirection: 'row', width: '100%', minHeight: '100vh' }}>
+            <div className="dashboardView" style={{width: '80%'}}> 
+              <Header/>
+              <div className='body'> <DeveloperScreen/> </div>
+            </div>
+            <div className='ChatBot' style={{display: 'flex',width:'20%',justifyContent: 'flex-end'}}> <ChatBotScreen/> </div>
+          </div>)}
     </div>
   );
 }

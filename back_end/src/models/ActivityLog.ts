@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { getNextSequenceValue } from '../utils/autoIncrement';
+import { getNextSequenceValue } from '../../utils/autoIncrement';
 
 interface ActivityLog extends Document {
     activityLogId: number;

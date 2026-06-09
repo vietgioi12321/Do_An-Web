@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
-import { getNextSequenceValue } from '../utils/autoIncrement';
+import { getNextSequenceValue } from '../../utils/autoIncrement';
 
 interface HardwareInfo{
     cpu: {brand:string, model:string, cores:number},

@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import connectDB from '../config/db';
+import aiClient from "../config/geminiConfig"
 
 import './models/Counter';
 
@@ -28,6 +29,7 @@ app.use(cors({
 }));
 
 connectDB();
+aiClient;
 
 app.use(express.json());
 app.use('/api/activitylog',activitylogRouter)

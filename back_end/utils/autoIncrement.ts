@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { ICounter } from '../models/Counter';
+import { ICounter } from '../src/models/Counter';
 
 /**
  * Hàm lấy số tăng dần tiếp theo cho một Collection cụ thể
