@@ -49,7 +49,7 @@ export const recoverPasswordController = async (req: Request, res: Response): Pr
         token: token,
         user: {
           userId: user.userId,
-          userName: user.nameUser,
+          userAccount: user.nameAccount,
           userEmail: user.email,
           role: user.rules || "User"
         }

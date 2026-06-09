@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { loginService } from './services/authService';
-import Icons from '../assets/icons/icons';
-import AuthFormStyle from './style/css/AuthForm';
+import { loginService } from '../../services/authService';
+import Icons from '../../../assets/icons/icons';
+import AuthFormStyle from '../../../assets/style/AuthForm';
 
 function Login(){
     const [username, setUsername] = useState('');
@@ -18,7 +18,6 @@ function Login(){
             localStorage.setItem('token', data.token);
             localStorage.setItem('userRole', data.user.role);
             navigate('/dashboard');
-
         } catch (err) {
             console.log(err);
             setError(err.response?.data?.error || 'Đăng nhập thất bại!');
@@ -37,7 +36,6 @@ function Login(){
                 <div className='input_Login' style={AuthFormStyle.input}>
                     {error && <p style={{ color: 'red' }}>{error}</p>}
 
-
                     {/* Input UserName*/}
                     <div className="username" >
                         <strong> Tài khoản </strong>
@@ -45,15 +43,12 @@ function Login(){
                             onChange={(e) => setUsername(e.target.value)} style={AuthFormStyle.inpuField}/>
                     </div>
 
-
                     {/* Input password */}
                     <div className="passwork">
                         <strong> Mật khẩu </strong>
                         <input type='password' value={password}
                             onChange={(e) => setPassword(e.target.value)} style={AuthFormStyle.inpuField}/>
                     </div>
-
-
 
                 </div>
 
@@ -65,8 +60,6 @@ function Login(){
                         style={AuthFormStyle.button} > Revcorver Passwork </button>
                     <button type="submit" style={AuthFormStyle.button}> Login </button>
                 </div>
-
-                
             </form>
         </div>
     )

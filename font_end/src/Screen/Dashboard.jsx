@@ -1,13 +1,13 @@
 import React from 'react';
 import { useState,useEffect } from 'react';
 
-import Menu from './MenuView';
-import Header from './layout/Header';
+import Menu from '../layout/MenuView';
+import Header from '../layout/Header';
 
-import AdminScreen from './User/Admin';
-import DeveloperScreen from './User/Developer';
+import AdminScreen from '../User/Admin';
+import DeveloperScreen from '../User/Developer';
 
-import ChatBotScreen from './ChatbotScreen';
+import ChatBotScreen from './ChatBot/ChatbotScreen';
 
 function Dashboard() {
     const [activeTab, setActiveTab] = useState('assign');

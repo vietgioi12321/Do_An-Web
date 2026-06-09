@@ -1,32 +1,9 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import './style/AssignStyle.css';
+import React from "react";
+import { useActivityData } from "../../services/actionService";
+import TableTabStyle from "../../../assets/style/TableTabStyle";
 
 export default function Activity() {
-    // 1. Khởi tạo state để chứa danh sách log (mặc định là mảng rỗng)
-    const [activityLogs, setActivityLogs] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    // 2. Gọi API khi component được mount
-    useEffect(() => {
-        const fetchLogs = async () => {
-            try {
-                // Thay đổi URL này cho đúng với cấu hình port back-end của bạn
-                const response = await axios.get("http://localhost:5000/api/activitylog/getActivityLog");
-                
-                // Nếu API trả về success = true, nạp mảng data vào state
-                if (response.data.success) {
-                    setActivityLogs(response.data.data);
-                }
-            } catch (error) {
-                console.error("Lỗi khi lấy dữ liệu Activity Log từ Server:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchLogs();
-    }, []);
+    const {activityLogs, loading} = useActivityData();
 
     if (loading) {
         return <div style={{ margin: 20, color: "var(--text-main)" }}>Đang tải nhật ký hoạt động...</div>;
@@ -46,10 +23,10 @@ export default function Activity() {
             >
                 <thead>
                     <tr style={{ backgroundColor: "rgba(30, 41, 59, 0.5)" }}>
-                        <th style={{ border: "1px solid #ddd", padding: "10px", width: "80px" }}>Log ID</th>
-                        <th style={{ border: "1px solid #ddd", padding: "10px", width: "120px" }}>Hành động</th>
-                        <th style={{ border: "1px solid #ddd", padding: "10px" }}>Chi tiết hoạt động</th>
-                        <th style={{ border: "1px solid #ddd", padding: "10px", width: "200px" }}>Thời gian</th>
+                        <th style={{ ...TableTabStyle.thead_th,width:30}}>Log ID</th>
+                        <th style={{ ...TableTabStyle.thead_th}}>Hành động</th>
+                        <th style={{ ...TableTabStyle.thead_th,width:200}}>Chi tiết hoạt động</th>
+                        <th style={{ ...TableTabStyle.thead_th}}>Thời gian</th>
                     </tr>
                 </thead>
                 
@@ -57,7 +34,7 @@ export default function Activity() {
                     {/* 3. Duyệt mảng dữ liệu bằng hàm .map() để sinh ra các dòng <tr> tự động */}
                     {activityLogs.length === 0 ? (
                         <tr>
-                            <td colSpan={4} style={{ border: "1px solid #ddd", padding: "15px", textAlign: "center" }}>
+                            <td colSpan={4} style={TableTabStyle.tbody_td}>
                                 Chưa có hoạt động nào được ghi nhận.
                             </td>
                         </tr>
@@ -76,12 +53,12 @@ export default function Activity() {
                             return (
                                 <tr key={log._id} style={{ borderBottom: "1px solid #ddd" }}>
                                     {/* Hiển thị mã log định danh nội bộ */}
-                                    <td style={{ border: "1px solid #ddd", padding: "10px", textAlign: "center" }}>
+                                    <td style={TableTabStyle.tbody_td}>
                                         {log.activityLogId}
                                     </td>
                                     
                                     {/* Hiển thị loại hành động (được viết hoa để làm nổi bật badge) */}
-                                    <td style={{ border: "1px solid #ddd", padding: "10px", textAlign: "center" }}>
+                                    <td style={TableTabStyle.tbody_td}>
                                         <span style={{
                                             padding: "3px 8px",
                                             borderRadius: "4px",
@@ -95,12 +72,12 @@ export default function Activity() {
                                     </td>
                                     
                                     {/* Hiển thị chuỗi thông tin chi tiết */}
-                                    <td style={{ border: "1px solid #ddd", padding: "10px", textAlign: "left" }}>
+                                    <td style={{...TableTabStyle.tbody_td,textAlign:'left'}}>
                                         {log.details}
                                     </td>
                                     
                                     {/* Hiển thị chuỗi ngày giờ đã được format */}
-                                    <td style={{ border: "1px solid #ddd", padding: "10px", textAlign: "center", fontSize: "14px" }}>
+                                    <td style={TableTabStyle.tbody_td}>
                                         {formattedTime}
                                     </td>
                                 </tr>

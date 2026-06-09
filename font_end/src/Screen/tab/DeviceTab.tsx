@@ -1,45 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './style/AssignStyle.css';
-
-interface Device {
-    deviceId: number;
-    name: string;
-    osVersion: string;
-    cpuCores: string;
-    batteryLevel: string;
-    networkSpeeds: number;
-    totalApps: number
-}
+import React from 'react';
+import { useDeviceData } from '../../services/systemService.ts';
+import TableTabStyle from "../../../assets/style/TableTabStyle";
 
 function Device() {
-    // 1. Khởi tạo state lưu danh sách thiết bị và trạng thái loading
-    const [devices, setDevices] = useState<Device[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    // 2. Tự động gọi API lấy danh sách thiết bị khi truy cập màn hình
-    useEffect(() => {
-        const fetchDevices = async () => {
-            try {
-                // Thay đổi domain và port cho đúng cấu hình back-end của bạn (ví dụ: http://localhost:5000)
-                const response = await axios.get('http://localhost:5000/api/device/getDevice');
-                
-                // Giả định dữ liệu trả về nằm trong response.data hoặc response.data.data tùy cấu hình back-end của bạn
-                // Ở đây cấu hình nhận mảng thiết bị trực tiếp hoặc từ trường data
-                const deviceData = response.data.data || response.data;
-                if (Array.isArray(deviceData)) {
-                    setDevices(deviceData);
-                }
-            } catch (error) {
-                console.error("Lỗi khi lấy dữ liệu danh sách thiết bị:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchDevices();
-    }, []);
-
+    const {devices,loading} = useDeviceData();
     // Hiển thị màn hình chờ khi đang lấy dữ liệu
     if (loading) {
         return <div style={{ margin: 20, color: "var(--text-main)" }}>Đang tải danh sách thiết bị...</div>;
@@ -60,13 +24,13 @@ function Device() {
             >
                 <thead>
                     <tr style={{ backgroundColor: "rgba(30, 41, 59, 0.5)" }}>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>ID</th>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>Tên Thiết bị</th>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>Phiên Bản</th>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>Số lõi CPU</th>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>Pin</th>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>Tốc độ mạng</th>
-                        <th style={{ border: '1px solid #ddd', padding: '10px' }}>Tổng số App</th>
+                        <th style={TableTabStyle.thead_th}>ID</th>
+                        <th style={TableTabStyle.thead_th}>Tên Thiết bị</th>
+                        <th style={TableTabStyle.thead_th}>Phiên Bản</th>
+                        <th style={TableTabStyle.thead_th}>Số lõi CPU</th>
+                        <th style={TableTabStyle.thead_th}>Pin</th>
+                        <th style={TableTabStyle.thead_th}>Tốc độ mạng</th>
+                        <th style={TableTabStyle.thead_th}>Tổng số App</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -81,27 +45,27 @@ function Device() {
                         devices.map((device, index) => (
                             <tr key={device.deviceId || index} style={{ border: '1px solid #ddd' }}>
                                 {/* Tự động sinh ID hiển thị tăng dần hoặc dùng trường có sẵn như device.deviceId */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     {device.deviceId}
                                 </td>
                                 
                                 {/* Tên thiết bị (Ví dụ: Google Pixel 6 (Emulator)) */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     {device.name}
                                 </td>
                                 
                                 {/* Phiên bản hệ điều hành (Ví dụ: Android 14) */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     {device.osVersion}
                                 </td>
                                 
                                 {/* Số lõi CPU (Ví dụ: 4 Cores) */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     {device.cpuCores}
                                 </td>
                                 
                                 {/* Mức pin (Ví dụ: 100%) */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     <span style={{
                                         color: device.batteryLevel === '100%' ? '#10b981' : 'inherit',
                                         fontWeight: device.batteryLevel === '100%' ? 'bold' : 'normal'
@@ -111,12 +75,12 @@ function Device() {
                                 </td>
                                 
                                 {/* Tốc độ mạng (Ví dụ: 150 Mbps) */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     {device.networkSpeeds} Mbps
                                 </td>
                                 
                                 {/* Tổng số App cài đặt (Ví dụ: 42) */}
-                                <td style={{ border: '1px solid #ddd', padding: '10px', textAlign: 'center', fontWeight: 'bold' }}>
+                                <td style={{...TableTabStyle.tbody_td,textAlign:'center'}}>
                                     {device.totalApps}
                                 </td>
                             </tr>

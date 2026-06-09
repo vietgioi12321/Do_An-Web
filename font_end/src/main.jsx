@@ -1,9 +1,9 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import Login from './Login'
-import Dashboard from './Dashboard'
-import RecoverPassword from './RecoverPassword'
-import ChangePassword from './ChangePassword'
+import Login from './Screen/auth/Login'
+import Dashboard from './Screen/Dashboard'
+import RecoverPassword from './Screen/auth/RecoverPassword'
+import ChangePassword from './Screen/auth/ChangePassword'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 ReactDOM.createRoot(document.getElementById('root')).render(

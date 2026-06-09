@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-import { recoverPasswordService } from './services/authService';
-import AuthFormStyle from './style/css/AuthForm';
-import Icons from '../assets/icons/icons';
+import { recoverPasswordService } from '../../services/authService';
+import AuthFormStyle from '../../../assets/style/AuthForm';
+import Icons from '../../../assets/icons/icons';
 
 function RecoverPassword(){
 
@@ -15,7 +15,13 @@ function RecoverPassword(){
         e.preventDefault();
         try {
             const response = await recoverPasswordService(username, email);
+            console.log("response: ",response)
             if (response.success) {
+                localStorage.setItem('token',response.token);
+                localStorage.setItem('userRole',response.user.role);
+                
+                localStorage.setItem('userAccount',response.user.userAccount);
+
                 navigate('/changePassword'); 
             }
         } catch (err) {
@@ -51,13 +57,11 @@ function RecoverPassword(){
 
                 </div>
                 
-                
                 {/* Button navigate --------------------------------------------------------*/}
                 <div className="button" style={{display: 'flex', justifyContent: 'space-between',}}>
                     <button type='button' onClick={() => navigate('/Login')} style={AuthFormStyle.button} >Login</button>
                     <button type="submit" style={AuthFormStyle.button}> Send </button>
                 </div>
-
 
             </form>
         </div>

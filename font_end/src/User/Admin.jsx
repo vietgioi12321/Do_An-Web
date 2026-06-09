@@ -1,11 +1,11 @@
 import React from 'react';
 import { useState } from 'react';
-import Overview from '../OverviewTab';
-import Device from '../DeviceTab';
-import Error from '../ErrorTab';
-import Assign from '../AssignTab'
-import Activity from '../ActivityTab';
-import Sidebar from './Sidebar';
+import Overview from '../Screen/tab/OverviewTab';
+import Device from '../Screen/tab/DeviceTab';
+import Error from '../Screen/tab/ErrorTab';
+import Assign from '../Screen/tab/AssignTab'
+import Activity from '../Screen/tab/ActivityTab';
+import Sidebar from '../layout/SidebarUser';
 
 function AdminScreen(){
 

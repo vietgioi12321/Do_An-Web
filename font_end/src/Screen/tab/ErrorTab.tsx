@@ -1,27 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React from 'react';
+import { useErrorData } from '../../services/systemService';
 
 export default function Error() {
-    const [error, setError] = useState([]);
-    const [loading, setLoading] = useState(true);
-
-    // 1. Gọi API lấy dữ liệu lỗi khi load trang
-    useEffect(() => {
-        const fetchBugs = async () => {
-            try {
-                // Thay đổi URL cho khớp với endpoint thực tế của bạn
-                const response = await axios.get('http://localhost:5000/api/logEntry/getLogEntryError');
-                if (response.data.success) {
-                    setError(response.data.data);
-                }
-            } catch (error) {
-                console.error("Lỗi khi lấy danh sách Error:", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchBugs();
-    }, []);
+    const {errorList,loading} = useErrorData();
 
     if (loading) {
         return <div style={{ margin: 20, color: '#94a3b8' }}>Đang tải danh sách log lỗi hệ thống...</div>;
@@ -35,28 +16,28 @@ export default function Error() {
                     <p style={{ color: '#64748b', margin: 0 }}>Danh sách nhật ký sự cố báo về từ các thiết bị</p>
                 </div>
                 <span style={{ backgroundColor: '#1e293b', color: '#38bdf8', padding: '6px 12px', borderRadius: '20px', fontSize: '14px', fontWeight: '600', border: '1px solid #334155' }}>
-                    Tổng số lỗi: {error.length}
+                    Tổng số lỗi: {errorList.length}
                 </span>
             </div>
 
             {/* Danh sách các khối Card lỗi */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {error.length === 0 ? (
+                {errorList.length === 0 ? (
                     <div style={{ textAlign: 'center', color: '#64748b', padding: '40px', border: '1px dashed #334155', borderRadius: '8px' }}>
                         Hệ thống an toàn, chưa phát hiện log lỗi nào!
                     </div>
                 ) : (
-                    error.map((error) => {
+                    errorList && errorList.map((item) => {
                         // Kiểm tra trạng thái gán để chọn màu Badge
-                        const isAssigned = error.userId !== 1; 
+                        const isAssigned = item.userId !== 1; 
                         
                         return (
                             <div 
-                                key={error.logEntryId || error._id} 
+                                key={item.logEntryId || item._id} 
                                 style={{
                                     backgroundColor: '#1e293b',
                                     borderRadius: '8px',
-                                    borderLeft: `5px solid ${error.logLevel === 'ERROR' ? '#ef4444' : '#f59e0b'}`,
+                                    borderLeft: `5px solid ${item.logLevel === 'ERROR' ? '#ef4444' : '#f59e0b'}`,
                                     padding: '16px',
                                     boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
                                     border: '1px solid #334155',
@@ -67,10 +48,10 @@ export default function Error() {
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '10px', marginBottom: '12px' }}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                         <span style={{ backgroundColor: '#ef4444', color: '#fff', fontSize: '11px', fontWeight: 'bold', padding: '2px 6px', borderRadius: '4px' }}>
-                                            {error.logLevel}
+                                            {item.logLevel}
                                         </span>
                                         <h3 style={{ color: '#f1f5f9', margin: 0, fontSize: '16px', fontWeight: '600' }}>
-                                            {error.name} <span style={{ color: '#64748b', fontWeight: 'normal' }}>#{error.logEntryId}</span>
+                                            {item.name} <span style={{ color: '#64748b', fontWeight: 'normal' }}>#{item.logEntryId}</span>
                                         </h3>
                                     </div>
                                     
@@ -84,17 +65,17 @@ export default function Error() {
                                         color: isAssigned ? '#10b981' : '#eab308',
                                         border: `1px solid ${isAssigned ? 'rgba(16, 185, 129, 0.3)' : 'rgba(234, 179, 8, 0.3)'}`
                                     }}>
-                                        {isAssigned ? `👤 Đã gán (Dev ID: ${error.userId})` : '⚠️ Chưa gán cho Developer'}
+                                        {isAssigned ? `👤 Đã gán (Dev ID: ${item.userId})` : '⚠️ Chưa gán cho Developer'}
                                     </span>
                                 </div>
 
                                 {/* Nội dung thông điệp báo lỗi chi tiết */}
                                 <div style={{ color: '#cbd5e1', fontSize: '14px', marginBottom: '12px', lineHeight: '1.5' }}>
-                                    <strong>Message:</strong> <span style={{ color: '#fca5a5' }}>{error.errorMessage}</span>
+                                    <strong>Message:</strong> <span style={{ color: '#fca5a5' }}>{item.errorMessage}</span>
                                 </div>
 
                                 {/* Khung mã nguồn Stack Trace */}
-                                {error.stackTrace && (
+                                {item.stackTrace && (
                                     <div style={{ marginBottom: '12px' }}>
                                         <div style={{ fontSize: '12px', color: '#64748b', marginBottom: '4px', fontWeight: '600' }}>STACK TRACE:</div>
                                         <pre style={{
@@ -109,7 +90,7 @@ export default function Error() {
                                             whiteSpace: 'pre-wrap',
                                             border: '1px solid #1e293b'
                                         }}>
-                                            {error.stackTrace}
+                                            {item.stackTrace}
                                         </pre>
                                     </div>
                                 )}
@@ -117,11 +98,11 @@ export default function Error() {
                                 {/* Thanh Footer hiển thị thông tin Thiết bị và Thời gian sự cố */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #334155', paddingTop: '10px', marginTop: '5px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap', gap: '8px' }}>
                                     <div>
-                                        📱 Thiết bị: <strong style={{ color: error.deviceName.includes('không xác định') ? '#94a3b8' : '#38bdf8' }}>{error.deviceName}</strong> 
-                                        <span style={{ marginLeft: '6px' }}>(ID: {error.deviceId})</span>
+                                        📱 Thiết bị: <strong style={{ color: item.deviceName.includes('không xác định') ? '#94a3b8' : '#38bdf8' }}>{item.deviceName}</strong> 
+                                        <span style={{ marginLeft: '6px' }}>(ID: {item.deviceId})</span>
                                     </div>
                                     <div>
-                                        ⏰ Thời gian: <span style={{ color: '#94a3b8' }}>{new Date(error.createdAt).toLocaleString('vi-VN')}</span>
+                                        ⏰ Thời gian: <span style={{ color: '#94a3b8' }}>{new Date(item.createdAt).toLocaleString('vi-VN')}</span>
                                     </div>
                                 </div>
 
