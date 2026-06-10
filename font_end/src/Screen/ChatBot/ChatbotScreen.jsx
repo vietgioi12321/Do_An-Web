@@ -1,9 +1,12 @@
-import React from "react";
-import {useChatBotData} from '../../services/chatBotService'
+import React, { useState } from "react";
+import {useChatBotData, handleKeyDown,handleSendMessage} from '../../services/chatBotService'
 import ChatBotStyle from "../../../assets/style/ChatBotStyle";
 
 function ChatBotScreen() {
     const {chatLogs,loading,messagesEndRef} = useChatBotData()
+    const [inputText, setInputText] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+    const {userId, setUserId} = useState(localStorage.getItem('UserId'))
 
     return (
         <div className="chatbot-wrapper" style={{ height: '100vh'}}>
@@ -60,8 +63,18 @@ function ChatBotScreen() {
                 
                 {/* 3. Vùng Input bám sát viền đáy */}
                 <div className="chatbot-input-area" style={ChatBotStyle.chatbot_input_area}>
-                    <input type="text" placeholder="Nhập tin nhắn..." style={ChatBotStyle.input} />
-                    <button className="send-chat-btn" style={ChatBotStyle.button} >
+                    <input type="text" 
+                            placeholder={isLoading ? "Gemini đang suy nghĩ..." : "Nhập tin nhắn..."}
+                            style={ChatBotStyle.input} 
+                            value={inputText}
+                            onChange={(e) => setInputText(e.target.value)}
+                            onKeyDown={(e) => handleKeyDown(e, inputText, setInputText, setIsLoading, userId)}
+                            disabled={isLoading} />
+
+                    <button className="send-chat-btn" 
+                            onClick={() => handleSendMessage(inputText, setInputText, setIsLoading, userId)}
+                            disabled={isLoading} // Khóa nút khi đang load
+                            style={ChatBotStyle.button} >
                         <i className="fa-solid fa-paper-plane"></i>
                     </button>
                 </div>
