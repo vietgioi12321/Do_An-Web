@@ -4,7 +4,7 @@ import { getActivityLogs,addActivitylog } from '../controllers/activityLogContro
 const router = express.Router();
 
 // Tuyến đường xử lý Đăng nhập
-router.get('/getActivityLog', getActivityLogs);
+router.get('/getActivityLog/:userId', getActivityLogs);
 router.post('/addActivityLog',addActivitylog)
 
 export default router;

@@ -1,8 +1,11 @@
 // useOverviewData.js
 import { useState, useEffect } from 'react';
 import axios from 'axios';
+import { io } from 'socket.io-client';
 
-export function useOverviewData() {
+const socket = io('http://localhost:5000');
+
+export function useOverviewData(userId) {
     const [pieData, setPieData] = useState([]);
     const [lineData, setLineData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -10,10 +13,10 @@ export function useOverviewData() {
     useEffect(() => {
         const fetchDashboardData = async () => {
             try {
-                // Gọi đồng thời cả 2 API thống kê báo cáo lỗi
+                const t = new Date().getTime();
                 const [pieRes, lineRes] = await Promise.all([
-                    axios.get('http://localhost:5000/api/bugs/getDeviceErrorStats'),
-                    axios.get('http://localhost:5000/api/bugs/getErrorTimelineStats')
+                    axios.get(`http://localhost:5000/api/overview/getDeviceErrorStats/${userId}?t=${t}`),
+                    axios.get(`http://localhost:5000/api/overview/getErrorTimelineStats/${userId}?t=${t}`)
                 ]);
 
                 if (pieRes.data.success) setPieData(pieRes.data.data);
@@ -21,27 +24,26 @@ export function useOverviewData() {
 
             } catch (error) {
                 console.error("Lỗi khi kết nối dữ liệu báo cáo MongoDB:", error);
-                // Gieo dữ liệu fallback giả lập nếu mất kết nối server
-                setPieData([
-                    { name: 'Google Pixel 6 (Emulator)', value: 4 },
-                    { name: 'Samsung Galaxy S23', value: 12 },
-                    { name: 'Thiết bị không xác định', value: 2 }
-                ]);
-                setLineData([
-                    { date: '2026-06-01', count: 5 },
-                    { date: '2026-06-02', count: 12 },
-                    { date: '2026-06-03', count: 8 },
-                    { date: '2026-06-04', count: 15 },
-                    { date: '2026-06-05', count: 21 },
-                    { date: '2026-06-06', count: 18 }
-                ]);
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchDashboardData();
-    }, []);
+        if (userId) {
+            fetchDashboardData();
+        }
+
+        // Lắng nghe tín hiệu từ Backend khi có lỗi mới được đẩy lên
+        socket.on('LOGENTRY_CHANGED', () => {
+            console.log("📡 OverviewTab nhận tín hiệu lỗi mới. Đang cập nhật biểu đồ...");
+            if (userId) fetchDashboardData();
+        });
+
+        // Dọn dẹp kết nối khi unmount
+        return () => {
+            socket.off('LOGENTRY_CHANGED');
+        };
+    }, [userId]);
 
     // Trả về các dữ liệu cần thiết cho UI sử dụng
     return { pieData, lineData, loading };

@@ -2,7 +2,7 @@ import React from 'react';
 import { useErrorData } from '../../services/systemService';
 
 export default function Error() {
-    const {errorList,loading} = useErrorData();
+    const {errorList,loading} = useErrorData(localStorage.getItem('userId'));
 
     if (loading) {
         return <div style={{ margin: 20, color: '#94a3b8' }}>Đang tải danh sách log lỗi hệ thống...</div>;
@@ -97,8 +97,8 @@ export default function Error() {
 
                                 {/* Thanh Footer hiển thị thông tin Thiết bị và Thời gian sự cố */}
                                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #334155', paddingTop: '10px', marginTop: '5px', fontSize: '12px', color: '#64748b', flexWrap: 'wrap', gap: '8px' }}>
-                                    <div>
-                                        📱 Thiết bị: <strong style={{ color: item.deviceName.includes('không xác định') ? '#94a3b8' : '#38bdf8' }}>{item.deviceName}</strong> 
+                                    <div key={item._id || item.logEntryId}>
+                                        📱 Thiết bị: <strong style={{ color: item.deviceName?.includes('không xác định') ? '#94a3b8' : '#38bdf8' }}>{item.deviceName}</strong> 
                                         <span style={{ marginLeft: '6px' }}>(ID: {item.deviceId})</span>
                                     </div>
                                     <div>

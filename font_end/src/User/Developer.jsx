@@ -8,8 +8,13 @@ import Sidebar from '../layout/SidebarUser';
 
 function DeveloperScreen(){
 
-    const [activeTab, setActiveTab] = useState('Overview');
-    const tabs = ['Overview', 'Devices', 'Error','Assign'];
+    const [activeTab, setActiveTab] = useState(localStorage.getItem('devActiveTab') || 'Overview');
+    const tabs = ['Overview', 'Devices', 'Error'];
+
+    // Theo dõi và lưu lại Tab mỗi khi người dùng click chuyển trang
+    React.useEffect(() => {
+        localStorage.setItem('devActiveTab', activeTab);
+    }, [activeTab]);
 
     // Hàm render nội dung tương ứng
     const renderContent = () => {
@@ -22,8 +27,6 @@ function DeveloperScreen(){
             return <Device/>
         case 'Error':
             return <Error/>
-        case 'Assign':
-            return <Assign />;
         default:
             return null;
         }

@@ -16,7 +16,9 @@ function Login(){
         try {
             const data = await loginService(username, password);
             localStorage.setItem('token', data.token);
+            localStorage.setItem('userId',data.user.userId);
             localStorage.setItem('userRole', data.user.role);
+            localStorage.setItem('userAccount', username); // Lưu tên tài khoản để dùng cho đổi mật khẩu
             navigate('/dashboard');
         } catch (err) {
             console.log(err);

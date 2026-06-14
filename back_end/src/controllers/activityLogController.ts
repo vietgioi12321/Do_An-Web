@@ -1,17 +1,22 @@
 import { Request, Response } from 'express';
 import ActivityLog from '../models/ActivityLog'; // Import Model Log của bạn
+import { socketService } from '../../services/socketService';
 
 export const getActivityLogs = async (req: Request, res: Response): Promise<void> => {
     try {
-        // Lấy các tham số phân trang từ Query String (nếu Front-end có truyền lên)
-        // Ví dụ: /api/logs?limit=50
+        const { userId } = req.params;
         const limit = req.query.limit ? parseInt(req.query.limit as string) : 100; 
+
+        let queryCondition = {};
+        if (userId && userId !== "1") {
+            queryCondition = { userId: parseInt(userId as string) };
+        }
 
         // Truy vấn MongoDB:
         // - find({}): Lấy toàn bộ danh sách log
         // - sort({ createdAt: -1 }): Log mới nhất đẩy lên đầu bảng
         // - limit(limit): Giới hạn số lượng bản ghi trả về để tối ưu hiệu năng
-        const logs = await ActivityLog.find({})
+        const logs = await ActivityLog.find(queryCondition)
                                       .sort({ createdAt: -1 }) 
                                       .limit(limit);
 
@@ -44,6 +49,11 @@ export const addActivitylog = async (req: Request, res: Response): Promise<void>
           actionName, details, userId, timestamp
       });
   
+      // 🔥 PHÁT TÍN HIỆU REAL-TIME CHO FRONT-END
+      socketService.emitToAll('ACTIVITYLOG_CHANGED', {
+          data: newActivityLog
+      });
+
       // 3. Trả về thông báo thành công cùng dữ liệu vừa tạo
       res.status(201).json({
         message: "Tạo thành công ActivityLog!",

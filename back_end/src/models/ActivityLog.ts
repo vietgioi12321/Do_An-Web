@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document } from 'mongoose';
 import { getNextSequenceValue } from '../../utils/autoIncrement';
+import { socketService } from '../../services/socketService';
 
 interface ActivityLog extends Document {
     activityLogId: number;
@@ -24,6 +25,11 @@ ActivityLogSchema.pre('save', async function (this: any) {
     } catch (error: any) {
       throw error;
     }
+});
+
+// 🔥 Bắn tín hiệu Real-time tự động mỗi khi có bất kỳ ActivityLog nào được lưu thành công
+ActivityLogSchema.post('save', function(doc) {
+    socketService.emitToAll('ACTIVITYLOG_CHANGED', { data: doc });
 });
 
 export default mongoose.model<ActivityLog>('ActivityLog',ActivityLogSchema);

@@ -1,20 +1,21 @@
 import { useState,useEffect } from "react";
 import axios from "axios";
 
-export function useDeviceData(){
-    // 1. Khởi tạo state lưu danh sách thiết bị và trạng thái loading
-    const [devices, setDevices] = useState([] as any[]);
+import { io } from 'socket.io-client';
+// 1. Kết nối tới địa chỉ URL của Back-end Node.js
+const socket = io('http://localhost:5000');
+
+export function useDeviceData(userID: string | null) {
+    const [devices, setDevices] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    // 2. Tự động gọi API lấy danh sách thiết bị khi truy cập màn hình
     useEffect(() => {
+        // Nếu chưa lấy được userID từ localStorage thì không làm gì cả
+        if (!userID) return;
+
         const fetchDevices = async () => {
             try {
-                // Thay đổi domain và port cho đúng cấu hình back-end của bạn (ví dụ: http://localhost:5000)
-                const response = await axios.get('http://localhost:5000/api/device/getDevice');
-                
-                // Giả định dữ liệu trả về nằm trong response.data hoặc response.data.data tùy cấu hình back-end của bạn
-                // Ở đây cấu hình nhận mảng thiết bị trực tiếp hoặc từ trường data
+                const response = await axios.get(`http://localhost:5000/api/device/getDevice/${userID}`);
                 const deviceData = response.data.data || response.data;
                 if (Array.isArray(deviceData)) {
                     setDevices(deviceData);
@@ -26,22 +27,51 @@ export function useDeviceData(){
             }
         };
 
+        // 1. Gọi API nạp dữ liệu gốc ban đầu khi truy cập trang
         fetchDevices();
-    }, []);
-    return {devices,loading}
+
+        // 2. 🔥 LẮNG NGHE REAL-TIME ĐỒNG BỘ
+        socket.on('DEVICE_CHANGED', (payload: any) => {
+            console.log("📡 Tín hiệu Real-time:", payload);
+            const { action, deviceUniqueId, data } = payload;
+
+            // Kịch bản cho User thường: Tự động gọi lại API ngầm để DB phân quyền lọc lại
+            if (String(userID) !== "1") {
+                fetchDevices();
+                return;
+            }
+
+            // Kịch bản cho Admin: Cập nhật trực tiếp trên State để giao diện mượt mà nhất
+            if (action === 'CREATE') {
+                setDevices((prev) => prev.some(d => d.deviceUniqueId === data.deviceUniqueId) ? prev : [data, ...prev]);
+            } else if (action === 'UPDATE') {
+                setDevices((prev) => prev.map(d => d.deviceUniqueId === deviceUniqueId ? data : d));
+            }
+        });
+
+        // 3. Dọn dẹp cổng nghe (Cleanup) khi người dùng chuyển trang để chống tràn RAM
+        return () => {
+            socket.off('DEVICE_CHANGED');
+        };
+
+    }, [userID]); // Tự động chạy lại luồng nếu userID trong localStorage có sự biến động thay đổi
+
+    return { devices, loading };
 }
 
 
-export function useErrorData(){
-    const [errorList, setErrorList] = useState<any[]>([]);
+export function useErrorData(userID: string | null){
+    const [errorList, setErrorList] = useState([]);
     const [loading, setLoading] = useState(true);
 
     // 1. Gọi API lấy dữ liệu lỗi khi load trang
     useEffect(() => {
+        if (!userID) return;
+
         const fetchBugs = async () => {
             try {
-                // Thay đổi URL cho khớp với endpoint thực tế của bạn
-                const response = await axios.get('http://localhost:5000/api/logEntry/getLogEntryError');
+                const t = new Date().getTime();
+                const response = await axios.get(`http://localhost:5000/api/logEntry/getLogEntryError/${userID}?t=${t}`);
                 if (response.data.success) {
                     setErrorList(response.data.data);
                 }
@@ -52,6 +82,26 @@ export function useErrorData(){
             }
         };
         fetchBugs();
-    }, []);
+
+        const handleLogChange = (payload: any) => {
+            console.log("📡 Tín hiệu Real-time:", payload);
+            const {data } = payload;
+
+            // Nếu là Dev thường và lỗi này không gán cho mình thì bỏ qua
+            if (String(userID) !== "1" && String(data.userId) !== String(userID)) {
+                return;
+            }
+            
+            setErrorList((prev) => prev.some(log => log.logEntryId === data.logEntryId) ? prev : [data, ...prev]);
+        };
+
+        // 2. 🔥 LẮNG NGHE REAL-TIME ĐỒNG BỘ
+        socket.on('LOGENTRY_CHANGED', handleLogChange);
+
+        // Cleanup lắng nghe để tránh trùng lặp sự kiện khi unmount Component
+        return () => {
+            socket.off('LOGENTRY_CHANGED', handleLogChange);
+        };
+    }, [userID]);
     return {errorList,loading}
 }

@@ -15,7 +15,7 @@ interface LogEntry extends Document {
     logLevel: string,
     errorMessage: string,
     stackTrace: string,
-    deviceId: number,
+    deviceUniqueId: string,
     userId: number,
     hardwareInfo: HardwareInfo,
     timestamp: Date
@@ -52,7 +52,7 @@ const LogEntrySchema : Schema = new Schema({
     logLevel: {type:String,required:true},
     errorMessage: {type:String,required:true},
     stackTrace: {type:String,required:true},
-    deviceId: {type:Number,required:true},
+    deviceUniqueId: {type:String,required:true},
     userId: {type:Number,required:true},
     hardwareInfo: {type:HardwareInfoSchema,required:true},
     timestamp: {type:Date, required:true, unique:true, default: Date.now}

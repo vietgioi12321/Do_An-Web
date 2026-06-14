@@ -3,7 +3,7 @@ import { useActivityData } from "../../services/actionService";
 import TableTabStyle from "../../../assets/style/TableTabStyle";
 
 export default function Activity() {
-    const {activityLogs, loading} = useActivityData();
+    const {activityLogs, loading} = useActivityData(localStorage.getItem('userId'));
 
     if (loading) {
         return <div style={{ margin: 20, color: "var(--text-main)" }}>Đang tải nhật ký hoạt động...</div>;

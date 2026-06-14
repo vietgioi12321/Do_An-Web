@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
+import http from 'http';
+import { Server } from 'socket.io';
 import dotenv from 'dotenv';
 import connectDB from '../config/db';
 import aiClient from "../config/geminiConfig"
+import { socketService } from '../services/socketService'; // Import Service vừa tạo
 
 import './models/Counter';
 
@@ -14,12 +17,13 @@ import logentryRouter from './routes/logEntryRouter';
 import reportRouter from './routes/reportRouter';
 import sussgesionRouter from './routes/sussgesionRouter';
 import userRoutes from './routes/userRoute';
+import overviewRouter from './routes/overviewRouter';
 
 
 dotenv.config();
 
 const app = express(); 
-const PORT = process.env.PORT || 5000;
+const server = http.createServer(app);
 
 // 2. KÍCH HOẠT CORS (Bắt buộc phải đặt TRƯỚC các dòng app.use các Route API)
 app.use(cors({
@@ -28,10 +32,17 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+// Khởi tạo Socket.io thông qua service duy nhất
+const io = socketService.init(server);
+app.set('io', io);
+
+const PORT = process.env.PORT || 5000;
+
 connectDB();
 aiClient;
 
 app.use(express.json());
+
 app.use('/api/activitylog',activitylogRouter)
 app.use('/api/assign',assignRouter)
 app.use('/api/chatbotlog',chatbotlogRouter)
@@ -40,6 +51,7 @@ app.use('/api/logentry',logentryRouter)
 app.use('/api/report',reportRouter)
 app.use('/api/sussgesion',sussgesionRouter)
 app.use('/api/users', userRoutes);
+app.use('/api/overview', overviewRouter);
 
 // ✅ ĐÃ SỬA: Thay đổi Request/Response thành express.Request/express.Response để tránh lỗi dòng này
 app.get('/', (req: express.Request, res: express.Response) => {
@@ -47,6 +59,6 @@ app.get('/', (req: express.Request, res: express.Response) => {
     res.send('API Giám sát hệ thống đang chạy...');
 });
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`⚡ Server đang chạy tại cổng: ${PORT}`);
 });

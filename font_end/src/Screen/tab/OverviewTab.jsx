@@ -7,7 +7,7 @@ import { useOverviewData } from '../../services/overviewService';
 
 function Overview() {
     // 🌟 2. Gọi Hook để lấy dữ liệu (Thay thế toàn bộ đoạn State + useEffect cũ)
-    const { pieData, lineData, loading } = useOverviewData();
+    const { pieData, lineData, loading } = useOverviewData(localStorage.getItem('userId'));
 
     // Bảng màu ngẫu nhiên sinh động cho các phần của Pie Chart
     const COLORS = ['#5d4a6d', '#ef4444', '#3b82f6', '#10b981', '#f59e0b', '#8b5cf6'];
@@ -24,40 +24,34 @@ function Overview() {
             
             <div className="overviewShow" style={{ display: 'flex', flexDirection: 'row', gap: 20 }}>
                 
-                {/* Khối bên trái: Danh sách Organizations (Giữ nguyên giao diện của bạn) */}
+                {/* Khối bên trái: Danh sách Devices */}
                 <div className="organizations" style={{ width: 350, height: 500, border: '1px solid black', borderRadius: 15, marginLeft: 15 }}>
-                    <strong style={{ display: 'inline-block', margin: 10 }}>Organizations</strong>
+                    <strong style={{ display: 'inline-block', margin: 10 }}>Thiết bị Lỗi (Devices)</strong>
                     <div style={{ display: 'flex', flexDirection: 'column', paddingInLine: 15, gap: 15 }}>
                         <div className="search" style={{ display: 'flex', width: '100%', height: 40, border: '1px solid black', borderRadius: 10, alignItems: 'center' }}>
                             <i className="fa-brands fa-sistrix" style={{ fontSize: 20, marginLeft: 15 }}></i>
                             <span style={{ marginLeft: 15, color: '#64748b' }}>Search</span>
                         </div>
-                        <span>6 results</span>
+                        <span>{pieData.length} kết quả</span>
                         
-                        <table className="organizations_table" style={{ borderCollapse: 'collapse', width: '100%' }}>
-                            <thead>
-                                <tr style={{ textAlign: 'left', borderBottom: '1px solid black' }}>
-                                    <th style={{ paddingBlock: 10 }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontWeight: 'bold' }}>Murillo</span>
-                                            <span style={{ fontSize: 12, color: '#64748b' }}>4 devices</span>
-                                        </div>
-                                    </th>
-                                    <th><i className="fa-solid fa-circle-exclamation" style={{ color: 'red' }}></i> 4</th>
-                                    <th><i className="fa-solid fa-triangle-exclamation" style={{ color: 'yellow' }}></i> 16</th>
-                                </tr>
-                                <tr style={{ textAlign: 'left', borderBottom: '1px solid black' }}>
-                                    <th style={{ paddingBlock: 10 }}>
-                                        <div style={{ display: 'flex', flexDirection: 'column' }}>
-                                            <span style={{ fontWeight: 'bold' }}>Hệ thống Chatbot</span>
-                                            <span style={{ fontSize: 12, color: '#64748b' }}>2 devices</span>
-                                        </div>
-                                    </th>
-                                    <th><i className="fa-solid fa-circle-exclamation" style={{ color: 'red' }}></i> 2</th>
-                                    <th><i className="fa-solid fa-triangle-exclamation" style={{ color: 'yellow' }}></i> 5</th>
-                                </tr>
-                            </thead>
-                        </table>
+                        <div style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                            <table className="organizations_table" style={{ borderCollapse: 'collapse', width: '100%' }}>
+                                <tbody>
+                                    {pieData.map((device, index) => (
+                                        <tr key={index} style={{ textAlign: 'left', borderBottom: '1px solid #e2e8f0' }}>
+                                            <td style={{ paddingBlock: 10 }}>
+                                                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                                                    <span style={{ fontWeight: 'bold' }}>{device.name}</span>
+                                                    <span style={{ fontSize: 12, color: '#64748b' }}>Tổng: {device.value} logs</span>
+                                                </div>
+                                            </td>
+                                            <td><i className="fa-solid fa-circle-exclamation" style={{ color: '#ef4444' }}></i> {device.errorCount || 0}</td>
+                                            <td><i className="fa-solid fa-triangle-exclamation" style={{ color: '#f59e0b' }}></i> {device.warningCount || 0}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
