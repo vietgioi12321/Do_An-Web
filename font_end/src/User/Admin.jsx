@@ -10,7 +10,7 @@ import Sidebar from '../layout/SidebarUser';
 function AdminScreen(){
 
     const [activeTab, setActiveTab] = useState(localStorage.getItem('adminActiveTab') || 'Overview');
-    const tabs = ['Overview', 'Devices', 'Patching', 'Software', 'Error', 'Activities','Assign'];
+    const tabs = ['Overview', 'Devices', 'Error', 'Activities','Assign'];
 
     // Theo dõi và lưu lại Tab mỗi khi người dùng click chuyển trang
     React.useEffect(() => {
